@@ -4,18 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "test": "NODE_ENV=test jest --verbose --runInBand",
+    "test:coverage": "NODE_ENV=test jest --verbose --runInBand --coverage",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "start": "NODE_ENV=production node index.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6",
+    "supertest": "^6.0.1"
   },
   "dependencies": {
+    "@types/jest": "^26.0.19",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "lodash": "^4.17.20",
     "mongoose": "^5.11.8"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }

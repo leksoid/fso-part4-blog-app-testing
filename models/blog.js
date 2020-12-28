@@ -7,8 +7,11 @@ const blogSchema = new mongoose.Schema({
 	likes: Number
   })
 
+// this will set the toJSON implementation, used by JSON.stringify
 blogSchema.set('toJSON', {
 	transform: (document, returnedObject) => {
+		returnedObject.id = returnedObject._id.toString()
+		delete returnedObject._id
 		delete returnedObject.__v
 	}
 })
