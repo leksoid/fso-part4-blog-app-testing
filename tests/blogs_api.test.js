@@ -15,7 +15,7 @@ beforeEach(async () => {
 	await Promise.all(promiseArray)
 })
 
-describe('test GET requests when there are blogs saved', () => {
+describe('GET /api/blogs', () => {
 	test('blogs are returned as JSON', async ()=> {
 		await api
 			.get('/api/blogs')
@@ -46,7 +46,7 @@ describe('test GET requests when there are blogs saved', () => {
 	})
 })
 
-describe('test GET requests for specific blogs by ID', () => {
+describe('GET /api/blogs/{id}', () => {
 	test('success with 200 when blog exists', async () => {
 		const blogs = await helper.getAllBlogsInDb()
 		const blogToView = blogs[0]
@@ -74,7 +74,7 @@ describe('test GET requests for specific blogs by ID', () => {
 	})
 })
 
-describe('test POST requests when trying to save a blog', () => {
+describe('POST {body} /api/blogs', () => {
 	test('a valid blog entry succeed', async () => {
 		const newBlog = {
 			title: 'Test Post',
@@ -141,7 +141,7 @@ describe('test POST requests when trying to save a blog', () => {
 	})
 })
 
-describe('test DELETE when removing blog', () => {
+describe('DELETE /api/blogs/{id}', () => {
 	test('a specific blog can be deleted', async () => {
 		const before = await helper.getAllBlogsInDb()
 		const blogToDelete = before[0]
@@ -157,7 +157,7 @@ describe('test DELETE when removing blog', () => {
 	})
 })
 
-describe('test PUT requests when updating the amount of likes', () => {
+describe('PUT {body} /api/blogs/{id}', () => {
 	test('an amount of likes updates', async () => {
 		const blogs = await helper.getAllBlogsInDb()
 		const before = blogs[0].likes

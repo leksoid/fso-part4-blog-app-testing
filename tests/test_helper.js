@@ -1,4 +1,5 @@
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const testData = [
 	{
@@ -14,6 +15,8 @@ const testData = [
 		likes: 1
 	}
 ]
+
+
 
 const blogWithoutLikes = {
 	title: "There is no like in here",
@@ -47,11 +50,16 @@ const nonExistingId = async () => {
 	return blog.id.toString()
 }
 
+const usersInDb = async () => {
+	return await User.find({})
+}
+
 module.exports = {
 	getAllBlogsInDb, 
 	nonExistingId, 
+	usersInDb,
 	testData,
 	blogWithoutLikes,
 	blogWithoutTitle,
-	blogWithoutUrl
+	blogWithoutUrl,
 }
