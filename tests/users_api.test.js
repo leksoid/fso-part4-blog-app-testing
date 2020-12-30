@@ -87,6 +87,35 @@ describe('POST {new_user} /api/users', () => {
 		const after = await helper.usersInDb()
 		expect(after).toHaveLength(before.length)
 	})
+
+	test('cannot create user without username', async () => {
+		const user = {
+			name: 'Koo Aid',
+			password: 'not so secret'
+		}
+
+		const result = await api
+			.post('/api/users')
+			.send(user)
+			.expect(400)
+		
+		expect(result.body.error).toContain('`username` is required')
+	})
+
+	test('username must be at least 3 characters long', async () => {
+		const user = {
+			username: 'bo',
+			name: 'Real Bo',
+			password: 'goooo'
+		}
+
+		const result = await api
+			.post('/api/users')
+			.send(user)
+			.expect(400)
+
+		expect(result.body.error).toContain(`shorter than the minimum allowed lengt`)
+	})
 })
 
 afterAll(() => {
