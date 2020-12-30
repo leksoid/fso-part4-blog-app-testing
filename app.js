@@ -4,9 +4,11 @@ const mongoose = require('mongoose')
 const app = express()
 const cors = require('cors')
 const blogRouter = require('./controllers/blog')
-const userRouter = require('./controllers/users')
+const userRouter = require('./controllers/user')
+const loginRouter = require('./controllers/login')
 const middleWare = require('./utils/middleware')
 
+// connect to MongoDB 
 mongoose.connect(config.MONGODB_URI, { 
 	useNewUrlParser: true, 
 	useUnifiedTopology: true, 
@@ -14,10 +16,17 @@ mongoose.connect(config.MONGODB_URI, {
 	useCreateIndex: true 
 })
 
+// enable CORS
 app.use(cors())
+
 app.use(express.json())
+
+// use router controllers
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', userRouter)
+app.use('/api/login', loginRouter)
+
+// middleware
 app.use(middleWare.errorHandler)
 
 module.exports = app 

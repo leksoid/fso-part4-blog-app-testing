@@ -76,11 +76,13 @@ describe('GET /api/blogs/{id}', () => {
 
 describe('POST {body} /api/blogs', () => {
 	test('a valid blog entry succeed', async () => {
+		const users = await helper.usersInDb()
 		const newBlog = {
 			title: 'Test Post',
 			author: 'Jest',
 			url: 'https://somewhere.com',
-			likes: 1
+			likes: 1,
+			userId: users[0]._id
 		}
 
 		await api
@@ -110,7 +112,8 @@ describe('POST {body} /api/blogs', () => {
 
 	test('blog without likes, will have a default 0 value', async () => {
 		const blog = helper.blogWithoutLikes
-
+		const users = await helper.usersInDb()
+		blog.userId = users[0]._id
 		const result = await api
 			.post('/api/blogs')
 			.send(blog)
