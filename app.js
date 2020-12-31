@@ -20,6 +20,7 @@ mongoose.connect(config.MONGODB_URI, {
 app.use(cors())
 
 app.use(express.json())
+app.use(middleWare.tokenExtractor)
 
 // use router controllers
 app.use('/api/blogs', blogRouter)
