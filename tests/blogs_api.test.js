@@ -2,7 +2,9 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
+const bcrypt = require('bcrypt')
 const api = supertest(app)
 
 beforeEach(async () => {
@@ -11,6 +13,17 @@ beforeEach(async () => {
 	const blogObj = helper.testData.map(blog => new Blog(blog))
 	// make save() call for each ^^ and save promises in array - this is done in parallel
 	const promiseArray = blogObj.map(blog => blog.save())
+	// wait for all promises to resolve 
+	await Promise.all(promiseArray)
+})
+
+beforeEach(async () => {
+	await User.deleteMany({})
+	const passwordHash = await bcrypt.hash('sekret', 10)
+	const hashed = helper.usersData.map(e => ({...e, passwordHash}))
+	const users = hashed.map(e => new User(e))
+	// make save() call for each ^^ and save promises in array - this is done in parallel
+	const promiseArray = users.map(e => e.save())
 	// wait for all promises to resolve 
 	await Promise.all(promiseArray)
 })
@@ -75,19 +88,33 @@ describe('GET /api/blogs/{id}', () => {
 })
 
 describe('POST {body} /api/blogs', () => {
-	test('a valid blog entry succeed', async () => {
-		const users = await helper.usersInDb()
+	let token = ''
+
+	beforeEach(async () => {
+		const loginUser = {
+			username: helper.usersData[0].username,
+			password: 'sekret'
+		}
+		const result = await api
+			.post('/api/login')
+			.send(loginUser)
+			.expect(200)
+		token = result.body.token
+	})
+
+	test.only('a valid blog entry succeed', async () => {
 		const newBlog = {
 			title: 'Test Post',
 			author: 'Jest',
 			url: 'https://somewhere.com',
 			likes: 1,
-			userId: users[0]._id
+			userId: helper.usersData[0]._id
 		}
 
 		await api
 			.post('/api/blogs')
 			.send(newBlog)
+			.auth(token, { type: 'bearer'})
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
 
@@ -104,6 +131,7 @@ describe('POST {body} /api/blogs', () => {
 		await api
 			.post('/api/blogs')
 			.send(newBlog)
+			.auth(token, { type: 'bearer'})
 			.expect(400)
 		
 		const response = await helper.getAllBlogsInDb()
@@ -117,6 +145,7 @@ describe('POST {body} /api/blogs', () => {
 		const result = await api
 			.post('/api/blogs')
 			.send(blog)
+			.auth(token, { type: 'bearer'})
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
 
@@ -129,6 +158,7 @@ describe('POST {body} /api/blogs', () => {
 		const result = await api
 			.post('/api/blogs')
 			.send(blog)
+			.auth(token, { type: 'bearer'})
 			.expect(400)
 		expect(String(result.body.error)).toContain('missing title')
 	})
@@ -139,6 +169,7 @@ describe('POST {body} /api/blogs', () => {
 		const result = await api
 			.post('/api/blogs')
 			.send(blog)
+			.auth(token, { type: 'bearer'})
 			.expect(400)
 		expect(String(result.body.error)).toContain('missing url')
 	})

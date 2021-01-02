@@ -20,7 +20,7 @@ mongoose.connect(config.MONGODB_URI, {
 app.use(cors())
 
 app.use(express.json())
-app.use(middleWare.tokenExtractor)
+app.use(middleWare.tokenExtractor) // such middleware (that updates the requests, should be before routers usage)
 
 // use router controllers
 app.use('/api/blogs', blogRouter)

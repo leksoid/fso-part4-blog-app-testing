@@ -16,7 +16,12 @@ const testData = [
 	}
 ]
 
-
+const usersData = [
+	{
+		username: 'alex',
+		name: 'Alexio Juno',
+	}
+]
 
 const blogWithoutLikes = {
 	title: "There is no like in here",
@@ -54,12 +59,19 @@ const usersInDb = async () => {
 	return await User.find({})
 }
 
+const userByUsername = async (username) => {
+	const user = await User.findOne({ 'username': username })
+	return user
+}
+
 module.exports = {
 	getAllBlogsInDb, 
 	nonExistingId, 
 	usersInDb,
+	userByUsername,
 	testData,
 	blogWithoutLikes,
 	blogWithoutTitle,
 	blogWithoutUrl,
+	usersData
 }
